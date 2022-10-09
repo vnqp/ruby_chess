@@ -1,9 +1,4 @@
-require_relative './pieces/bishop'
-require_relative './pieces/king'
-require_relative './pieces/knight'
-require_relative './pieces/queen'
-require_relative './pieces/pawn'
-require_relative './pieces/rook'
+require_relative './pieces'
 
 class Board
   attr_reader :grid
@@ -13,35 +8,30 @@ class Board
 
     # create pawns
     8.times do |column|
-      board.place_piece([6, column], Pawn.new(:white))
-      board.place_piece([1, column], Pawn.new(:black))
+      board.place_piece([6, column], Pawn.new(board, [6, column], :white))
+      board.place_piece([1, column], Pawn.new(board, [1, column], :black))
     end
-
     # create rooks
-    board.place_piece([7, 0], Rook.new(:white))
-    board.place_piece([7, 7], Rook.new(:white))
-    board.place_piece([0, 0], Rook.new(:black))
-    board.place_piece([0, 7], Rook.new(:black))
-    
+    board.place_piece([7, 0], Rook.new(board, [7, 0], :white))
+    board.place_piece([7, 7], Rook.new(board, [7, 7], :white))
+    board.place_piece([0, 0], Rook.new(board, [0, 0], :black))
+    board.place_piece([0, 7], Rook.new(board, [0, 7], :black))
     # create knights
-    board.place_piece([7, 1], Knight.new(:white))
-    board.place_piece([7, 6], Knight.new(:white))
-    board.place_piece([0, 1], Knight.new(:black))
-    board.place_piece([0, 6], Knight.new(:black))
-    
+    board.place_piece([7, 1], Knight.new(board, [7, 1], :white))
+    board.place_piece([7, 6], Knight.new(board, [7, 6], :white))
+    board.place_piece([0, 1], Knight.new(board, [0, 1], :black))
+    board.place_piece([0, 6], Knight.new(board, [0, 6], :black))
     # create bishops
-    board.place_piece([7, 2], Bishop.new(:white))
-    board.place_piece([7, 5], Bishop.new(:white))
-    board.place_piece([0, 2], Bishop.new(:black))
-    board.place_piece([0, 5], Bishop.new(:black))
-    
+    board.place_piece([7, 2], Bishop.new(board, [7, 2], :white))
+    board.place_piece([7, 5], Bishop.new(board, [7, 5], :white))
+    board.place_piece([0, 2], Bishop.new(board, [0, 2], :black))
+    board.place_piece([0, 5], Bishop.new(board, [0, 5], :black))
     # create kings
-    board.place_piece([7, 3], King.new(:white))
-    board.place_piece([0, 3], King.new(:black))
-
+    board.place_piece([7, 3], King.new(board, [7, 3], :white))
+    board.place_piece([0, 3], King.new(board, [0, 3], :black))
     # create queens
-    board.place_piece([7, 4], Queen.new(:white))
-    board.place_piece([0, 4], Queen.new(:black))
+    board.place_piece([7, 4], Queen.new(board, [7, 4], :white))
+    board.place_piece([0, 4], Queen.new(board, [0, 4], :black))
 
     board
   end
@@ -60,6 +50,11 @@ class Board
     grid[row][column]
   end
 
+  def empty?(location)
+    row, column = location
+    grid[row][column].nil?
+  end
+  
   def in_bounds?(location)
     row, column = location
 
@@ -67,5 +62,20 @@ class Board
     column < grid.first.length && 
     row >= 0 && 
     column >= 0 
+  end
+
+  def move_piece(start_location, end_location)
+    piece = self.show_piece(start_location)
+
+    if !piece.possible_moves.include?(end_location)
+      raise "#{end_location} position not available, available positions: #{piece.possible_moves}"
+    end
+    if !in_bounds?(end_location)
+      raise "position not in bounds, available positions: #{piece.possible_moves}"
+    end
+
+    self.place_piece(start_location, nil)
+    self.place_piece(end_location, piece)
+    piece.location = end_location
   end
 end

@@ -1,16 +1,12 @@
-class Bishop
-  attr_reader :color
-
-  def initialize(color)
-    @color = color
-  end
-
+class Bishop < Piece
+  include Slideable
+  
   # override to_s method
   def to_s
     color == :white ? "♗" : "♝"
   end
   
-  def possible_moves
+  def directions
     [
       [1, 1], [1, -1], [-1, 1], [-1, -1]
     ]

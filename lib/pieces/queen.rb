@@ -1,16 +1,12 @@
-class Queen
-  attr_reader :color
-
-  def initialize(color)
-    @color = color
-  end
-
+class Queen < Piece
+  include Slideable
+  
   # override to_s method
   def to_s
     color == :white ? "♕" : "♛"
   end
   
-  def possible_moves
+  def directions
     [
       [0, 1], [1, 0], [0, -1], [-1, 0], [1, 1], [1, -1], [-1, 1], [-1, -1]
     ]

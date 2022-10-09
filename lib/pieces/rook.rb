@@ -1,16 +1,12 @@
-class Rook
-  attr_reader :color
-
-  def initialize(color)
-
-    @color = color
-  end
-
+# Rook Piece
+class Rook < Piece
+  include Slideable
+  
   def to_s
     color == :white ? "♖" : "♜"
   end
 
-  def possible_moves
+  def directions
     [
       [0, 1], [1, 0], [0, -1], [-1, 0]
     ]
