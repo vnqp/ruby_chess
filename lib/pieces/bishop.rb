@@ -1,4 +1,4 @@
-class Pawn
+class Bishop
   attr_reader :color
 
   def initialize(color)

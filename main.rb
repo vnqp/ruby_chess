@@ -1,15 +1,15 @@
-require_relative './lib/board.rb'
-require_relative './lib/pieces/pawn.rb'
-require_relative './lib/pieces/rook.rb'
+require_relative './lib/board'
+require_relative './lib/rendered_board'
+require_relative './lib/pieces/bishop'
+require_relative './lib/pieces/king'
+require_relative './lib/pieces/knight'
+require_relative './lib/pieces/queen'
+require_relative './lib/pieces/pawn'
+require_relative './lib/pieces/rook'
 
-b = Board.new
+b = Board.set_pieces
 
+rendered_board = RenderedBoard.new(b)
+puts rendered_board.render
 
-b.place_piece([0, 0], Pawn.new([0, 0], :black))
-b.place_piece([1, 1], Pawn.new([0, 0], :black))
-b.place_piece([1, 2], Pawn.new([0, 0], :black))
-
-puts b.grid
-pawn = Pawn.new([0, 0], :white)
-
-p pawn.to_s
+pawn = Pawn.new(:white)
