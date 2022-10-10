@@ -7,7 +7,7 @@ class Game
     @renderer = renderer_class.new(board)
     @player1 = player1
     @player2 = player2
-    @current_player = @player2
+    @current_player = @player1
   end
 
   def swap_player!
@@ -57,8 +57,7 @@ class Game
         break
       rescue InvalidMoveError => e
         puts e.message
-      end
-      
+      end  
     end
   end
 end

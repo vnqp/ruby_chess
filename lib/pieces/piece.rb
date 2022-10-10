@@ -26,7 +26,7 @@ class Piece
   end
 
   def enemy?(location)
-    board.in_bounds?(location) && board.show_piece(location).color != color
+    !board.empty?(location) && board.in_bounds?(location) && board.show_piece(location).color != color
   end
 
   def ally?(location)

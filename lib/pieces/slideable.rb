@@ -13,17 +13,14 @@ module Slideable
         location = [current_row, current_column]
         break unless board.in_bounds?(location)
 
-        board.empty?(location) ? moves << location : nil
-        
+        board.empty?(location) ? moves << location : nil    
         
         if enemy?(location)
           moves << location
           break
         end
 
-        if ally?(location)
-          break
-        end
+        break if ally?(location)
       end
     end
     moves

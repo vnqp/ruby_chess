@@ -6,7 +6,6 @@ class Player
   end
 
   def get_location
-  gets.chomp.split(",").map { |part| part.to_i }
-
+    gets.chomp.split(",").map { |part| part.to_i }
   end
 end
