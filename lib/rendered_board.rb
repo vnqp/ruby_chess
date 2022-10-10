@@ -1,5 +1,5 @@
 class RenderedBoard
-  attr_reader :board
+  attr_accessor :board
 
   def initialize(board)
     @board = board
@@ -10,11 +10,7 @@ class RenderedBoard
       puts "---------------"
       8.times do |column|
         piece = board.show_piece([row, column])
-        if piece.nil?
-          print "  "
-        else
-          print "#{board.show_piece([row, column])} "
-        end
+        print "#{board.show_piece([row, column])} "
       end
       puts ""
     end

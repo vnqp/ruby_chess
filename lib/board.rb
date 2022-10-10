@@ -37,7 +37,7 @@ class Board
   end
 
   def initialize
-    @grid = Array.new(8) { Array.new(8) }
+    @grid = Array.new(8) { Array.new(8, NullPiece.instance) }
   end
 
   def place_piece(location, piece)
@@ -52,9 +52,9 @@ class Board
 
   def empty?(location)
     row, column = location
-    grid[row][column].nil?
+    grid[row][column] == NullPiece.instance
   end
-  
+
   def in_bounds?(location)
     row, column = location
 
@@ -64,18 +64,62 @@ class Board
     column >= 0 
   end
 
+  def in_check?(color)
+    king = pieces
+    .find { |p| p.color == color && p.is_a?(King) }
+
+    raise 'King not found' if king.nil?
+    king_location = king.location
+    
+    pieces.select { |p| p.color != color }.each do |piece|
+      return true if piece.possible_moves.include?(king_location)
+
+    end
+
+    false
+  end
+
+  def checkmate?(color)
+    return false if !in_check?(color)
+    color_pieces = pieces.select { |p| p.color == color}
+    color_pieces.all? { |piece| piece.safe_moves.empty? }
+  end
+
+  def pieces
+    grid.flatten.reject { |piece| piece.is_a?(NullPiece)}
+  end
+
   def move_piece(start_location, end_location)
     piece = self.show_piece(start_location)
-
-    if !piece.possible_moves.include?(end_location)
-      raise "#{end_location} position not available, available positions: #{piece.possible_moves}"
+    # validate that end location is a valid move
+    if !piece.safe_moves.include?(end_location)
+      raise InvalidMoveError.new(
+      "#{end_location} position not available, available positions: #{piece.safe_moves}"
+      )
     end
     if !in_bounds?(end_location)
-      raise "position not in bounds, available positions: #{piece.possible_moves}"
+      raise InvalidMoveError.new (
+      "position not in bounds, available positions: #{piece.safe_moves}"
+      )
     end
 
-    self.place_piece(start_location, nil)
+    move_piece!(start_location, end_location)
+  end
+
+  def move_piece!(start_location, end_location)
+    piece = self.show_piece(start_location)
+    self.place_piece(start_location, NullPiece.instance)
     self.place_piece(end_location, piece)
-    piece.location = end_location
+    self.show_piece(end_location).location = end_location
+  end
+
+  def dup
+    new_board = Board.new
+    pieces.each do |piece|
+      new_piece = piece.class.new(new_board, piece.location, piece.color)
+      new_board.place_piece(new_piece.location, new_piece) 
+    end
+
+    new_board
   end
 end
